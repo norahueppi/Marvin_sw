@@ -10,7 +10,10 @@
 
 EventGroupHandle_t buttoneventgroup;
 
-#define BTN_VOL_UP_BITMASK	1 << 0
+#define BTN_VOL_UP_BITMASK      1 << 0
+#define BTN_VOL_DOWN_BITMASK    1 << 1
+#define BTN_MODE1_BITMASK       1 << 2
+#define BTN_MODE2_BITMASK       1 << 3
 
 typedef struct
 {
@@ -36,10 +39,23 @@ void buttontask(void* param)
     button_data[BTN_VOL_UP].bitmask = BTN_VOL_UP_BITMASK;
     button_data[BTN_VOL_UP].count = 0;
 
-   ESP_LOGW(TAG, "BTN_VOL_UP: Start");
+    button_data[BTN_VOL_DOWN].gpio = GPIO_BTN_VOL_DOWN;
+    button_data[BTN_VOL_DOWN].bitmask = BTN_VOL_DOWN_BITMASK;
+    button_data[BTN_VOL_DOWN].count = 0;
+    
+    button_data[BTN_MODE1].gpio = GPIO_BTN_MODE1;
+    button_data[BTN_MODE1].bitmask = BTN_MODE1;
+    button_data[BTN_MODE1].count = 0;
+
+    button_data[BTN_MODE2].gpio = GPIO_BTN_MODE2;
+    button_data[BTN_MODE2].bitmask = BTN_MODE2;
+    button_data[BTN_MODE2].count = 0;
+
+    ESP_LOGW(TAG, "BTN_VOL_UP: Start");
+
     for(;;)
     {
-        for(int i = 0; i < 1; i++)
+        for(int i = 0; i < 4; i++)
         {
             if(gpio_get_level(button_data[i].gpio) == false)
             {
@@ -52,6 +68,9 @@ void buttontask(void* param)
                 {
                     ESP_LOGI(TAG, "BTN_VOL_UP: Send Bits");
                     xEventGroupSetBits(buttoneventgroup, BTN_VOL_UP_BITMASK);
+                    xEventGroupSetBits(buttoneventgroup, BTN_VOL_DOWN_BITMASK);
+                    xEventGroupSetBits(buttoneventgroup, BTN_MODE1_BITMASK);
+                    xEventGroupSetBits(buttoneventgroup, BTN_MODE2_BITMASK);
                 }
                 button_data[i].count = 0;
                 
@@ -67,6 +86,24 @@ bool getBtnState(uint8_t button)
     if (xEventGroupGetBits(buttoneventgroup) & BTN_VOL_UP_BITMASK)
     {
         xEventGroupClearBits(buttoneventgroup, BTN_VOL_UP_BITMASK);
+        return true;       
+    }
+
+    if (xEventGroupGetBits(buttoneventgroup) & BTN_VOL_DOWN_BITMASK)
+    {                                                 
+        xEventGroupClearBits(buttoneventgroup, BTN_VOL_DOWN_BITMASK);
+        return true;       
+    }
+
+    if (xEventGroupGetBits(buttoneventgroup) & BTN_MODE1_BITMASK)
+    {
+        xEventGroupClearBits(buttoneventgroup, BTN_MODE1_BITMASK);
+        return true;       
+    }
+
+    if (xEventGroupGetBits(buttoneventgroup) & BTN_MODE2_BITMASK)
+    {
+        xEventGroupClearBits(buttoneventgroup, BTN_MODE2_BITMASK);
         return true;       
     }
     return false;
