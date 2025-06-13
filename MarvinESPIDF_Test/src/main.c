@@ -5,6 +5,7 @@
 #include "driver/gpio.h"
 
 #include "buttentaskhandler.h"
+#include "ledtaskhandler.h"
 
 #define TAG "BTN_PUSHED"
 
@@ -82,12 +83,23 @@ void app_main()
     vTaskDelay(3000/portTICK_PERIOD_MS);
     ESP_LOGI(TAG, "startup");
     init_button_handler();
+    init_led_handler();
+    setLED(OFF);
 
     for(;;)
     {
+       
+
+        if (getBtnState(BTN_VOL_DOWN))
+        {
+            ESP_LOGI(TAG, "BTN_VOL_UP: Pressed");
+            setLED(ON);
+        }
+
         if (getBtnState(BTN_VOL_UP))
         {
             ESP_LOGI(TAG, "BTN_VOL_UP: Pressed");
+            setLED(OFF);
         }
         vTaskDelay(1000/portTICK_PERIOD_MS);
     }

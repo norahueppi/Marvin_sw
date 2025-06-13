@@ -1,8 +1,8 @@
 #pragma once
 #include "stdio.h"
 
-#define GPIO_BTN_VOL_UP   11
-#define GPIO_BTN_VOL_DOWN 12
+#define GPIO_BTN_VOL_UP   12
+#define GPIO_BTN_VOL_DOWN 11
 #define GPIO_BTN_MODE1    14
 #define GPIO_BTN_MODE2    13
 

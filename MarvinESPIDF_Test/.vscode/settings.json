@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "algorithm": "c"
+        "algorithm": "c",
+        "event_groups.h": "c",
+        "gpio.h": "c",
+        "freertos.h": "c"
     }
 }
