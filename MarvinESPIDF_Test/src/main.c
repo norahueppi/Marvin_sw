@@ -6,6 +6,7 @@
 
 #include "buttentaskhandler.h"
 #include "ledtaskhandler.h"
+#include "toftaskhandler.h"
 
 #define TAG "BTN_PUSHED"
 
@@ -13,17 +14,10 @@
 // #define BIT_4	( 1 << 4 )
 // #define ALL_BITS 0x00FFFFFF
 
-#define BTN1 11
-#define BTN2 12
-#define BTN3 13
-#define BTN4 14
-
 // int BTN1_last = 0;
 // int BTN2_last = 0;
 // int BTN3_last = 0;
 // int BTN4_last = 0;
-
-#define GPIO_INPUT_PIN_SEL  ((1ULL<<BTN1) | (1ULL<<BTN2) | (1ULL<<BTN3) | (1ULL<<BTN4))
 
 // EventGroupHandle_t xEventGroup;
 
@@ -84,24 +78,35 @@ void app_main()
     ESP_LOGI(TAG, "startup");
     init_button_handler();
     init_led_handler();
+    init_tof_handler(200, 25, 6, 100, 2000);
     setLED(OFF);
 
     for(;;)
     {
-       
+        /*if(getSensor())
+        {
+            //Audio beginnt
+            setLED(ON);   
+        }
+
+        if(Audio fertig)
+        {
+            setLED(OFF);
+        }*/
 
         if (getBtnState(BTN_VOL_DOWN))
         {
+            /*Audio leiser*/
             ESP_LOGI(TAG, "BTN_VOL_UP: Pressed");
             setLED(ON);
         }
 
         if (getBtnState(BTN_VOL_UP))
         {
+            /*Audio lauter*/
             ESP_LOGI(TAG, "BTN_VOL_UP: Pressed");
             setLED(OFF);
         }
         vTaskDelay(1000/portTICK_PERIOD_MS);
     }
-
 }

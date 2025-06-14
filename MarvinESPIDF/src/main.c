@@ -5,6 +5,8 @@
 #include "driver/gpio.h"
 
 #include "buttontaskhandler.h"
+#include "ledtaskhandler.h"
+#include "toftaskhandler.h"
 
 void app_main() 
 {
