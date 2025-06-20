@@ -66,7 +66,7 @@ void buttonTask(void* param)
             {
                 if (button_data[i].count >= 10)
                 {
-                    ESP_LOGI(TAG, "BTN_VOL_UP: Send Bits %i", button_data[i].gpio);
+                    ESP_LOGI(TAG, "%i", button_data[i].gpio);
                     xEventGroupSetBits(buttoneventgroup, button_data[i].bitmask);   
                 }
                 button_data[i].count = 0;

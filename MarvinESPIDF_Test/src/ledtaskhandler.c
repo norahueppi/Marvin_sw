@@ -19,8 +19,13 @@ EventGroupHandle_t ledeventgroup;
 #define EXAMPLE_LED_NUMBERS         4
 #define EXAMPLE_CHASE_SPEED_MS      10
 
-#define ON_BITMASK  1 << 0
-#define OFF_BITMASL 1 << 1
+#define ON_BITMASK          1 << 0
+#define OFF_BITMASK         1 << 1
+#define GREEN_BITAMASK      1 << 2
+#define PURPLE_BITMASK      1 << 3
+#define RAINBOW_BITMASK     1 << 4
+
+int LedOff = 1;
 
 static const char *TAG = "LED";
 
@@ -127,32 +132,69 @@ void ledTask (void* param)
 
     };
     for (;;) {
+        
+        ESP_LOGE(TAG, "State: %i", colorstate);
         if (xEventGroupGetBits(ledeventgroup) & ON_BITMASK)
         {
-            ESP_LOGW(TAG, "LED on");
-            // if ()
-            // {
-                for (int i = 0; i < 3; i++)
-                {
-                    for (int j = i; j < EXAMPLE_LED_NUMBERS; j += 3)
+            switch (colorstate)
+            {
+                case RAINBOWSTATE:
+                    for (int i = 0; i < 3; i++)
                     {
-                        // Build RGB pixels
-                        hue = 0 * 360 / 50 + start_rgb;
-                        led_strip_hsv2rgb(hue, 100, 10, &red, &green, &blue);
-                        led_strip_pixels[j * 3 + 0] = green;
-                        led_strip_pixels[j * 3 + 1] = blue;
-                        led_strip_pixels[j * 3 + 2] = red;
+                        for (int j = i; j < EXAMPLE_LED_NUMBERS; j += 3)
+                        {
+                            // Build RGB pixels
+                            hue = 0 * 360 / 50 + start_rgb;
+                            //led_strip_hsv2rgb(hue, 100, 10, &red, &green, &blue);
+                            led_strip_pixels[j * 3 + 0] = green;
+                            led_strip_pixels[j * 3 + 1] = blue;
+                            led_strip_pixels[j * 3 + 2] = red;
+                        }
+                        // Flush RGB values to LEDs
+                        vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+                        // memset(led_strip_pixels, 0, sizeof(led_strip_pixels));
+                        // ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
+                        // ESP_ERROR_CHECK(rmt_tx_wait_all_done(led_chan, portMAX_DELAY));
+                    }  
+                    start_rgb += 5; 
+                    ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
+                    ESP_ERROR_CHECK(rmt_tx_wait_all_done(led_chan, portMAX_DELAY));
+
+                    if (LedOff == 1)
+                    {
+                        ESP_LOGI(TAG, "change state");
+                        colorstate = lastState;
                     }
-                    // Flush RGB values to LEDs
-                    vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
-                    // memset(led_strip_pixels, 0, sizeof(led_strip_pixels));
-                    // ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
-                    // ESP_ERROR_CHECK(rmt_tx_wait_all_done(led_chan, portMAX_DELAY));
-                }
-            // }    
-            ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
-            ESP_ERROR_CHECK(rmt_tx_wait_all_done(led_chan, portMAX_DELAY));
-            start_rgb += 5;
+
+                    break;
+
+                case GREENSTATE:
+                    
+
+            }
+            ESP_LOGW(TAG, "LED on");
+            
+            
+            //     for (int i = 0; i < 3; i++)
+            //     {
+            //         for (int j = i; j < EXAMPLE_LED_NUMBERS; j += 3)
+            //         {
+            //             // Build RGB pixels
+            //             hue = 0 * 360 / 50 + start_rgb;
+            //             //led_strip_hsv2rgb(hue, 100, 10, &red, &green, &blue);
+            //             led_strip_pixels[j * 3 + 0] = green;
+            //             led_strip_pixels[j * 3 + 1] = blue;
+            //             led_strip_pixels[j * 3 + 2] = red;
+            //         }
+            //         // Flush RGB values to LEDs
+            //         vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+            //         // memset(led_strip_pixels, 0, sizeof(led_strip_pixels));
+            //         // ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
+            //         // ESP_ERROR_CHECK(rmt_tx_wait_all_done(led_chan, portMAX_DELAY));
+            //     }  
+            // start_rgb += 5; 
+            // ESP_ERROR_CHECK(rmt_transmit(led_chan, led_encoder, led_strip_pixels, sizeof(led_strip_pixels), &tx_config));
+            // ESP_ERROR_CHECK(rmt_tx_wait_all_done(led_chan, portMAX_DELAY));
         }
         else 
         {
@@ -166,7 +208,7 @@ void ledTask (void* param)
 
 void setLED(uint8_t on_off)
 {
-    ESP_LOGI(TAG, "on_off");
+    // ESP_LOGI(TAG, "on_off");
     if (on_off == ON)
     {
         xEventGroupSetBits(ledeventgroup, ON_BITMASK);
@@ -175,7 +217,36 @@ void setLED(uint8_t on_off)
     {
         xEventGroupClearBits(ledeventgroup, ON_BITMASK);
     }
+    if (on_off == OFF)
+    {
+        ESP_LOGW(TAG, "hihi: %i", LedOff);
+        LedOff = 1;
+    }
+    else
+    {
+        LedOff = 0;
+    }
 
+}
+
+void setColor(uint8_t color)
+{
+    if (color == GREEN)
+    {
+        lastState = GREENSTATE;
+       colorstate = GREENSTATE;
+    }
+
+    if (color == PURPLE)
+    {
+        lastState = PURPLESTATE;
+        colorstate = PURPLESTATE;
+    }
+
+    if (color == RAINBOW)
+    {
+        colorstate = RAINBOWSTATE;
+    }
 }
 
 /*INIT TASK*/

@@ -97,13 +97,13 @@ void tofTask (void* param)
             meandistance /= confidentresults;
         }
         xSemaphoreTake(mutex_getDistanceData, portMAX_DELAY);
-        if(meandistance > 0) {
+        if(meandistance > tofconf_threshold_low_mm && meandistance < tofconf_threshold_high_mm) {
             measuredDistance = meandistance;            
         } else {
             measuredDistance = 0;
         }
         xSemaphoreGive(mutex_getDistanceData);
-        // ESP_LOGI(TAG, "Mean measured distance: %f", meandistance);
+        // ESP_LOGE(TAG, "Mean measured distance: %f", meandistance);
         vTaskDelay(tofconf_updatetime/portTICK_PERIOD_MS);
     }
 }
@@ -113,6 +113,7 @@ bool getSensor()
     bool result = false;
     xSemaphoreTake(mutex_getDistanceData, portMAX_DELAY);
     if(measuredDistance > 0) {
+        // ESP_LOGW(TAG, "detected");
         result = true;
     }
     xSemaphoreGive(mutex_getDistanceData);

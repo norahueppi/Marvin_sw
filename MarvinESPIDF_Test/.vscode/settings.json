@@ -4,6 +4,7 @@
         "event_groups.h": "c",
         "gpio.h": "c",
         "freertos.h": "c",
-        "esp_vfs_fat.h": "c"
+        "esp_vfs_fat.h": "c",
+        "audiomanager.h": "c"
     }
 }
