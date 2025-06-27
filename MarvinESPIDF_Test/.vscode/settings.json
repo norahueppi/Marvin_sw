@@ -5,6 +5,7 @@
         "gpio.h": "c",
         "freertos.h": "c",
         "esp_vfs_fat.h": "c",
-        "audiomanager.h": "c"
+        "audiomanager.h": "c",
+        "ledtaskhandler.h": "c"
     }
 }
