@@ -63,6 +63,7 @@ void loop() {
   Modi1 = digitalRead(MODI1);
 
   if((VolumeDown != VolumeDown_last) && (VolumeDown == LOW)){
+    printf("taste");
     myLED.brightness( LED_BRIGHT, 1 );  // turn the LED on
     myLED.setPixel( 0, L_GREEN, 1 );
     myLED.setPixel( 1, L_RED, 1 );
@@ -100,6 +101,6 @@ void loop() {
   VolumeUp_last = VolumeUp;
   Modi2_last = Modi2;
   Modi1_last = Modi1;
-
+ 
 }
 
