@@ -145,7 +145,7 @@ void ledTask (void* param)
             //             {
             //                 // Build RGB pixels
             //                 hue = 0 * 360 / 50 + start_rgb;
-            //                 //led_strip_hsv2rgb(hue, 100, 10, &red, &green, &blue);
+                            //led_strip_hsv2rgb(hue, 100, 10, &red, &green, &blue);
             //                 led_strip_pixels[j * 3 + 0] = green;
             //                 led_strip_pixels[j * 3 + 1] = blue;
             //                 led_strip_pixels[j * 3 + 2] = red;
@@ -181,7 +181,7 @@ void ledTask (void* param)
                     {
                         // Build RGB pixels
                         hue = 0 * 360 / 50 + start_rgb;
-                        //led_strip_hsv2rgb(hue, 100, 10, &red, &green, &blue);
+                        led_strip_hsv2rgb(hue, 100, 10, &red, &green, &blue);
                         led_strip_pixels[j * 3 + 0] = green;
                         led_strip_pixels[j * 3 + 1] = blue;
                         led_strip_pixels[j * 3 + 2] = red;
@@ -217,16 +217,15 @@ void setLED(uint8_t on_off)
     {
         xEventGroupClearBits(ledeventgroup, ON_BITMASK);
     }
-    if (on_off == OFF)
-    {
-        // ESP_LOGW(TAG, "hihi: %i", LedOff);
-        LedOff = 1;
-    }
-    else
-    {
-        LedOff = 0;
-    }
-
+    // if (on_off == OFF)
+    // {
+    //     // ESP_LOGW(TAG, "hihi: %i", LedOff);
+    //     LedOff = 1;
+    // }
+    // else
+    // {
+    //     LedOff = 0;
+    // }
 }
 
 // void setColor(uint8_t color)
