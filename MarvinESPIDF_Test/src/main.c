@@ -28,30 +28,31 @@ int predictablenumber = 0;
 
 void app_main()
 {
-    vTaskDelay(3000/portTICK_PERIOD_MS);
+    vTaskDelay(1000/portTICK_PERIOD_MS);
     ESP_LOGI(TAG, "startup");
     init_button_handler();
     init_led_handler();
 
     init_tof_handler(200, 25, 6, 100, 1500);
-    vTaskDelay(2000/portTICK_PERIOD_MS);
+    vTaskDelay(1000/portTICK_PERIOD_MS);
     powerEnable(true);
     amplifierEnable(true);
-    vTaskDelay(100);
+    vTaskDelay(1000);
     initAudioPlayer();
+    vTaskDelay(1000);
     initSDCard();
 
-    vTaskDelay(100);
+    vTaskDelay(1000);
     setVolumeMain(volume);
     setVolumeOut1(volume);
     setVolumeOut2(volume);
 
-    setLED(OFF);
+    setLED(ON);
 
     for(;;)
     {
-        // if (!isPlayingMP3())
-        // {
+        if (!isPlayingMP3())
+        {
         ESP_LOGW(TAG, "NOW");
         ESP_LOGI(TAG, "distace: %i", tmf8820_distance());
             if(getSensor())
@@ -71,6 +72,7 @@ void app_main()
                         {
                             case MODE1:
                                 playMP3(filelist[predictablenumber].name);
+                                // predictablenumber++;
                                 break;
 
                             case MODE2:
@@ -81,7 +83,7 @@ void app_main()
                     }
                 }
             }
-        // }
+        }
 
         counterLED --;
 
@@ -95,8 +97,6 @@ void app_main()
         {
             Mode = 1;
             ESP_LOGI(TAG,"Switch: %i", Mode);
-            // setLED(ON);
-            // setColor(PURPLE);
         }
 
         if (getBtnState(BTN_MODE2))
