@@ -50,12 +50,14 @@ void app_main()
 
     for(;;)
     {
-        if (!isPlayingMP3())
-        {
+        // if (!isPlayingMP3())
+        // {
+        ESP_LOGW(TAG, "NOW");
+        ESP_LOGI(TAG, "distace: %i", tmf8820_distance());
             if(getSensor())
             {
                 setLED(ON);
-                setColor(RAINBOW);
+                // setColor(RAINBOW);
 
                 counterLED = 150;
 
@@ -79,14 +81,14 @@ void app_main()
                     }
                 }
             }
-        }
+        // }
 
         counterLED --;
 
         if (counterLED < 1)
         {
-            ESP_LOGI(TAG, "Help");
-            colorstate = lastState;
+            setLED(OFF);
+            // colorstate = lastState;
         }
 
         if (getBtnState(BTN_MODE1))
@@ -101,8 +103,8 @@ void app_main()
         {
             Mode = 2;
             ESP_LOGI(TAG,"Switch: %i", Mode);
-            setLED(ON);
-            setColor(GREEN);
+            // setLED(ON);
+            // setColor(GREEN);
         }
 
         if (getBtnState(BTN_VOL_DOWN))
